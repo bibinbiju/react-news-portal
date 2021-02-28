@@ -8,6 +8,7 @@ export default class Login extends Component {
         this.state = {
             form: {},
             redirect: false,
+            msg: '',
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.login = this.login.bind(this);
@@ -21,19 +22,23 @@ export default class Login extends Component {
             form: form
         });
     }
-    login() {
+    login(e) {
+
+        e.preventDefault()
         store.dispatch({
             type: 'CHECK_LOGIN',
             payload: this.state.form
         });
         if (store.getState().get('isAuthenticated')) {
             this.setState({
-                redirect: true
+                redirect: true,
+                msg: '',
             })
         }
         else {
             this.setState({
-                redirect: false
+                redirect: false,
+                msg: 'Login failed',
             })
         }
 
@@ -42,14 +47,18 @@ export default class Login extends Component {
     render() {
         return ((this.state.redirect) ? <Redirect to="/" /> : < div className="window-center" >
             <form onSubmit={this.login}>
+                <p style={{ color: 'red' }}>{this.state.msg}</p>
                 <table>
-                    <th>
-                        <td colspan="3">Login</td>
-                    </th>
+                    <thead>
+                        <tr>
+                            <th colSpan="3">Login</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                     <tr>
                         <td><label htmlFor="email">User Name</label></td>
                         <td>:</td>
-                        <td><input type="email" required="true" id="email" onChange={this.handleInputChange} name="email" /></td>
+                            <td><input type="email" required={true} id="email" onChange={this.handleInputChange} name="email" /></td>
                     </tr>
                     <tr>
                         <td><label htmlFor="password">Password</label></td>
@@ -61,6 +70,7 @@ export default class Login extends Component {
                         <td></td>
                         <td><button type="submit" >Login</button></td>
                     </tr>
+                    </tbody>
                 </table>
             </form>
         </div >)

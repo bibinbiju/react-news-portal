@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import React, { Component } from 'react';
 import store from '../store';
 
@@ -52,13 +51,13 @@ export default class Home extends Component {
     }
     prevPage() {
         let prevOffset = ((this.state.offset - 20) >= 0) ? this.state.offset - 20 : 0;
-        if (prevOffset != this.state.offset)
+        if (prevOffset !== this.state.offset)
             this.getArticleList(prevOffset);
         else alert('You reached start of the page')
     }
     nextPage() {
         let nextOffset = ((this.state.offset + 20) > this.state.totalArticles - 1) ? this.state.totalArticles - 20 : this.state.offset + 20;
-        if (nextOffset != this.state.offset)
+        if (nextOffset !== this.state.offset)
             this.getArticleList(nextOffset);
         else alert('You reached end of the page')
     }
@@ -73,10 +72,11 @@ export default class Home extends Component {
     }
     addToReadLater(article) {
         let { state } = this.props;
-        let savedArticles = state.get('savedArticles');
+        let savedArticles = state.getIn(['users', state.get('isAuthenticated'), 'savedArticles']);
         let findExist = savedArticles.find((u) => {
-            return u.get('slug_name') == article.slug_name
+            return u.get('slug_name') === article.slug_name
         });
+        console.log(findExist, 'findExist')
         if (!findExist) {
             store.dispatch({
                 type: 'ADD_TO_READ_LATER',
@@ -98,36 +98,40 @@ export default class Home extends Component {
         });
         return (
             <div id="container">
-                <div class="sidenav">
-                    {sectionList.map((item) => {
-                        return <a href={'#' + item.section} onClick={() => { this.selectSection(item.section) }}>{item.display_name}</a>
+                <div className="sidenav">
+                    <a key='all' href='#all' onClick={() => { this.selectSection("") }}>All</a>
+                    {sectionList.map((item, index) => {
+                        return <a key={index} href={'#' + item.section} onClick={() => { this.selectSection(item.section) }}>{item.display_name}</a>
                     })}
                 </div>
 
-                <div class="main">
-                    <div class="row">
-
-                        {articles.map((article) => {
+                <div className="main">
+                    <div className="row">
+                        
+                        {(!articles.length) ? <div className="empty-article"><h5>No items to list</h5></div> : articles.map((article, index) => {
                             return (
-                                <div class="column"  >
-                                    <div class="card" onClick={() => { window.open(article.url) }}>
-                                        <img src={article.thumbnail_standard} />
+                                <div className="column" key={index} >
+                                    <div className="card" onClick={() => { window.open(article.url) }}>
+                                        <img alt={article.thumbnail_standard} src={article.thumbnail_standard} />
                                         <h3>{article.title}</h3>
                                         <p>{article.abstract}</p>
 
                                     </div>
-                                    <div class="card">
+                                    <div className="card">
                                         <button onClick={(e) => { e.preventDefault(); this.addToReadLater(article); }}>Read Later</button>
                                     </div>
                                 </div>)
-                        })}
+                        })
+                        }
 
                     </div>
                 </div>
-                <div class="pagination">
+
+                <div className="pagination">
                     <a href="#" onClick={this.prevPage}>❮</a>
                     <a href="#" onClick={this.nextPage}>❯</a>
                 </div>
+
             </div >)
     }
 }
