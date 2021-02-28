@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import React, { Component } from 'react';
 import store from '../store';
 export default class SavedArticles extends Component {
@@ -17,14 +16,14 @@ export default class SavedArticles extends Component {
     componentDidMount() {
         let { state } = this.props;
         this.setState({
-            totalArticles: state.getIn(['savedArticles']).size
+            totalArticles: state.getIn(['users', state.get('isAuthenticated'), 'savedArticles']).size
         })
     }
     componentDidUpdate(prevProps) {
         let { state } = this.props;
-        if (prevProps.state.getIn(['savedArticles']).size != state.getIn(['savedArticles']).size)
+        if (prevProps.state.getIn(['users', state.get('isAuthenticated'), 'savedArticles']).size != state.getIn(['users', state.get('isAuthenticated'), 'savedArticles']).size)
             this.setState({
-                totalArticles: state.getIn(['savedArticles']).size
+                totalArticles: state.getIn(['users', state.get('isAuthenticated'), 'savedArticles']).size
             })
     }
     prevPage() {
@@ -53,31 +52,32 @@ export default class SavedArticles extends Component {
 
     render() {
         let { state } = this.props;
-        let articles = state.getIn(['savedArticles']);
+        let articles = state.getIn(['users', state.get('isAuthenticated'), 'savedArticles']);
         articles = articles.toArray().map((i) => i[1]);
         articles = articles.filter((i, index) => index >= this.state.offset && index < (this.state.offset + this.state.limit));
         // articles = articles.splice(parseInt(this.state.offset), parseInt(this.state.limit));
         return (
+            (articles.length) ?
             <div id="container">
-                <div class="row">
-                    {articles.map((article) => {
+                    <div className="row">
+                        {articles.map((article, index) => {
                         return (
-                            <div class="column"  >
-                                <div class="card" onClick={() => { window.open(article.get('url')) }}>
+                            <div className="column" key={index}  >
+                                <div className="card" onClick={() => { window.open(article.get('url')) }}>
                                     <h3>{article.get('title')}</h3>
                                     <p>{article.get('abstract')}</p>
                                 </div>
-                                <div class="card">
+                                <div className="card">
                                     <button onClick={() => { this.removeArticle(article.get('id')); }}>Remove Article</button>
                                 </div>
                             </div>)
                     })}
 
                 </div>
-                <div class="pagination">
+                    <div className="pagination">
                     <a href="#" onClick={this.prevPage}>❮</a>
                     <a href="#" onClick={this.nextPage}>❯</a>
                 </div>
-            </div >)
+                </div > : <div className="window-center"><h5>No items for read later</h5></div>)
     }
 }

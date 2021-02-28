@@ -9,7 +9,7 @@ const AppReducer = (state, action) => {
 
   switch (action.type) {
     case 'REMOVE_ARTICLE':
-      state = state.deleteIn(['savedArticles', action.id]);
+      state = state.deleteIn(['users', state.get('isAuthenticated'), 'savedArticles', action.id]);
       return state;
     case 'ADD_TO_READ_LATER':
       let readLaterData = action.payload;
@@ -20,7 +20,7 @@ const AppReducer = (state, action) => {
         abstract: readLaterData.abstract,
         url: readLaterData.url,
       }
-      state = state.setIn(['savedArticles', article.id], new Article(article));
+      state = state.setIn(['users', state.get('isAuthenticated'), 'savedArticles', article.id], new Article(article));
       return state;
     case 'DELETE_ACCOUNT':
       state = state.deleteIn(['users', state.get('isAuthenticated')]);

@@ -19,7 +19,8 @@ export default class Register extends Component {
             form: form
         });
     }
-    submit() {
+    submit(e) {
+        e.preventDefault()
         let { state } = this.props;
         let allUsers = state.get('users');
         let findUserExist = allUsers.find((u) => {
@@ -41,29 +42,33 @@ export default class Register extends Component {
         return (<div className="window-center">
             <form onSubmit={this.submit}>
                 <table>
-                    <th>
-                        <td colspan="3">Register Form</td>
-                    </th>
+                    <thead>
+                        <tr>
+                            <th colSpan="3">Register Form</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                     <tr>
                         <td><label htmlFor="name">User Name</label></td>
                         <td>:</td>
-                        <td><input type="text" maxlength="30" required="true" onChange={this.handleInputChange} id="name" name="name" /></td>
+                            <td><input type="text" maxLength="30" required={true} onChange={this.handleInputChange} id="name" name="name" /></td>
                     </tr>
                     <tr>
                         <td><label htmlFor="email">User Name</label></td>
                         <td>:</td>
-                        <td><input type="email" required="true" onChange={this.handleInputChange} id="email" name="email" /></td>
+                            <td><input type="email" required={true} onChange={this.handleInputChange} id="email" name="email" /></td>
                     </tr>
                     <tr>
                         <td><label htmlFor="password" >Password</label></td>
                         <td>:</td>
-                        <td><input type="password" maxlength="20" required="true" onChange={this.handleInputChange} id="password" name="password" /></td>
+                            <td><input type="password" maxLength="20" required={true} onChange={this.handleInputChange} id="password" name="password" /></td>
                     </tr>
                     <tr>
                         <td><Link to="/login">Login</Link></td>
                         <td></td>
                         <td><button type="submit" >Create Account</button></td>
                     </tr>
+                    </tbody>
                 </table>
             </form>
         </div>)

@@ -37,7 +37,8 @@ export default class Profile extends Component {
             form: form
         });
     }
-    updateProfile() {
+    updateProfile(e) {
+        e.preventDefault();
         store.dispatch({
             type: 'EDIT_PROFILE',
             payload: this.state.form
@@ -59,16 +60,20 @@ export default class Profile extends Component {
         let { state } = this.props;
         let user = state.getIn(['users', state.get('isAuthenticated')])
         return (<div className="window-center">
+            <form onSubmit={this.updateProfile}>
             <table>
-                <th>
-                    <td colspan="3">Profile</td>
-                </th>
+                    <thead>
+                        <tr>
+                            <th colSpan="3">Profile</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                 <tr>
                     <td><label htmlFor="name">Name </label></td>
                     <td>:</td>
                     <td>
                         {(!this.state.editMode) ? <span >{user.get('name')}</span> :
-                            <input type="text" maxlength="30" id="name" onChange={this.handleInputChange} value={this.state.form.name} name="name" />}
+                                    <input required={true} type="text" maxLength="30" id="name" onChange={this.handleInputChange} value={this.state.form.name} name="name" />}
                     </td>
                 </tr>
                 <tr>
@@ -79,15 +84,17 @@ export default class Profile extends Component {
                 <tr>
                     <td><label htmlFor="password">Password</label></td>
                     <td>:</td>
-                    <td>{(!this.state.editMode) ? <span >{user.get('password')}</span> : <input maxlength="20" type="password" onChange={this.handleInputChange} value={this.state.form.password} id="password" name="password" />}</td>
+                            <td>{(!this.state.editMode) ? <span >{user.get('password')}</span> : <input required={true} maxLength="20" type="password" onChange={this.handleInputChange} value={this.state.form.password} id="password" name="password" />}</td>
                 </tr>
                 <tr>
                     <td><button onClick={() => { this.deleteAccount() }}>Delete Account</button></td>
                     <td></td>
-                    <td>{(!this.state.editMode) ? <button onClick={() => { this.toggleEditMode(true) }}>Edit</button> :
-                        <button onClick={() => { this.updateProfile() }}>Save</button>}</td>
+                            <td>{(!this.state.editMode) ? <button onClick={(e) => { e.preventDefault(); this.toggleEditMode(true); }}>Edit</button> :
+                                <button type="submit" >Save</button>}</td>
                 </tr>
+                    </tbody>
             </table>
+            </form>
         </div>)
     }
 }

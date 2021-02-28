@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import logo from './logo.svg'
 import './App.css'
 import { connect } from 'react-redux'
 import store from './store';
@@ -31,7 +30,11 @@ class App extends Component {
             {(!state.get('isAuthenticated')) ? <li style={{ "float": "right" }}>
               <Link to="/login">Login</Link>
             </li> : <li style={{ "float": "right" }}>
-                <Link to="/logout">Logout</Link>
+                <Link to="/logout" onClick={() => {
+                  store.dispatch({
+                    type: 'LOG_OUT',
+                  })
+                }}>Logout</Link>
               </li>}
 
             {/* <li>
@@ -46,9 +49,6 @@ class App extends Component {
             <Login state={state} />
           </Route>
           <Route path="/logout" render={({ location }) => {
-            store.dispatch({
-              type: 'LOG_OUT',
-            })
             return <Redirect
               to={{
                 pathname: "/login",
